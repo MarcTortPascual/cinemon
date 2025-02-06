@@ -1,5 +1,7 @@
 package cinemon.model;
 
+import cinemon.model.exceptions.DoubleReserveException;
+
 public class Butaca {
     private int id;
     private TipoButaca tipo;
@@ -26,8 +28,13 @@ public class Butaca {
     public boolean isReservado() {
         return reservado;
     }
-    public void setReservado(boolean reservado) {
-        this.reservado = reservado;
+    public void setReservado(boolean reservado)throws DoubleReserveException {
+        if (this.reservado && reservado){
+            throw new DoubleReserveException("No se puede reservar butacas reservadas");
+        }else{
+            this.reservado = reservado;
+        }
+        
     }
     public boolean isAccesible() {
         return accesible;

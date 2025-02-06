@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import cinemon.controler.console.CineControler;
 import cinemon.model.*;
+import cinemon.model.exceptions.DoubleReserveException;
 
 public class Main {
     // Método para crear un nuevo cine
@@ -143,7 +144,15 @@ public class Main {
                                 List<Butaca> filtrados = fila.stream().filter(b -> id == b.getId()).toList();
                                 if (filtrados.size() > 0) {
                                     bu_actual = filtrados.get(0);
-                                    bu_actual.setReservado(true);
+                                    if (bu_actual.isReservado()){
+                                        System.out.println("Butaca reservada!!");
+                                    }
+                                    try{
+                                        bu_actual.setReservado(true);
+                                    }catch(DoubleReserveException e){
+                                        System.out.println("Butaca ya reservada!!!");
+                                    }
+                                    
                                     novalido = false;
                                 }
                             }
@@ -359,4 +368,6 @@ public class Main {
             }
         }
     }
+
+
 }

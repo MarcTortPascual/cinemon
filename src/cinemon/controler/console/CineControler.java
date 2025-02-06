@@ -1,13 +1,18 @@
 package cinemon.controler.console;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import cinemon.model.*;
+import cinemon.model.exceptions.BadsessiondayException;
 
 public class CineControler {
-
+    private static boolean novalido = true;
     // Función que crea un nuevo cine con un ID dado y detalles proporcionados por el usuario.
+
     public static Cine newCine (int id, Scanner scanner){
         System.out.println("Nombre del cine:");
         String nombre = scanner.next(); // Se pide el nombre del cine.
@@ -32,7 +37,7 @@ public class CineControler {
     // Función para añadir salas al cine.
     public static void addRooms(Cine cine, Scanner scanner){
         ArrayList<Sala> salas2 = new ArrayList<>();
-        boolean mas_salas = true; // Bandera para agregar múltiples salas.
+        boolean mas_salas = true; // Flag para agregar múltiples salas.
 
         while (mas_salas) {
             System.out.println("Ahora vamos a crear una sala: ");
@@ -43,14 +48,44 @@ public class CineControler {
             }
 
             // Se selecciona el tipo de sala.
-            int tipoVal = Integer.parseInt(scanner.next())-1;
-            TipoSala tipoSala = TipoSala.values()[tipoVal];
-
+            int tipoVal = 0;
+            TipoSala tipoSala = TipoSala.values()[0];
+            novalido = true;
+            while (novalido) {
+                try{
+                    tipoVal = Integer.parseInt(scanner.next())-1;
+                    tipoSala = TipoSala.values()[tipoVal];
+                    novalido = false;
+                }catch(NumberFormatException | IndexOutOfBoundsException e){
+                    System.out.println("Pon un numero en el rango [0-"+(TipoSala.values().length+1) +"]");
+                }
+            }
+            
             // Se solicitan las dimensiones de la sala (filas y columnas).
-            System.out.println("Numero de filas: ");
-            int filas = Integer.parseInt(scanner.next())-1;
-            System.out.println("Numero de columnas: ");
-            int columnas = Integer.parseInt(scanner.next())-1;
+            int filas = 0;
+            int columnas = 0;
+           novalido = true;
+            while (novalido) {
+                try{
+                    System.out.println("Numero de filas: ");
+                    filas = Integer.parseInt(scanner.next())-1;
+                    novalido = false;
+                }catch(NumberFormatException e ){
+                    System.out.println("Pon un numero");
+                }
+            }
+
+           novalido = true;
+            while (novalido) {
+                try{
+                    System.out.println("Numero de columnas: ");
+                    columnas = Integer.parseInt(scanner.next())-1;
+                    novalido = false;
+                }catch(NumberFormatException e ){
+                    System.out.println("Pon un numero");
+                }
+            }
+            
 
             // Crea una matriz de butacas para la sala.
             ArrayList<ArrayList<Butaca>> butacas = new ArrayList<>();
@@ -100,18 +135,60 @@ public class CineControler {
             Proyecion pelicula;
 
             // Solicita la fecha y las horas de inicio y finalización de la sesión.
-            System.out.println("Fecha en formato dd/mm/aaaa :");
-            String fecha = scanner.next();
-            System.out.println("Hora de inicio en formato HH:MM :");
-            String hora_inicio = fecha + scanner.next();
-            System.out.println("Hora de final en formato HH:MM :");
-            String hora_final = fecha + scanner.next();
-
+            String fecha = "";
+           novalido = true;
+            while (novalido) {
+                try{
+                    System.out.println("Fecha en formato dd/mm/aaaa :");
+                    fecha = scanner.next();
+                    LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    novalido = false;
+                }catch(DateTimeParseException e){
+                    System.out.println("Formato de fecha Ilegal");
+                }
+            }
+            String hora_inicio = "";
+           novalido = true;
+            while (novalido) {
+                try{
+                    System.out.println("Hora de inicio en formato HH:MM :");
+                    hora_inicio = fecha + scanner.next();
+                    LocalDate.parse(hora_inicio, DateTimeFormatter.ofPattern("dd/MM/yyyyHH:mm"));
+                    novalido = false;
+                }catch(DateTimeParseException e){
+                    System.out.println("Formato de fecha Ilegal");
+                }
+            }
+            String hora_final = "";
+           novalido = true;
+            while (novalido) {
+                try{
+                    System.out.println("Hora de final en formato HH:MM :");
+                    hora_final = fecha + scanner.next();
+                    LocalDate.parse(hora_final, DateTimeFormatter.ofPattern("dd/MM/yyyyHH:mm"));
+                    novalido = false;
+                }catch(DateTimeParseException e){
+                    System.out.println("Formato de fecha Ilegal");
+                }
+            }
+          
             // Recoge los detalles de la película o serie.
             System.out.println("Es una serie [s/n]: ");
             boolean is_serie = scanner.next().toLowerCase().equals("s");
-            System.out.println("Duración: ");
-            int duracion = Integer.parseInt(scanner.next());
+            
+
+            int duracion = 0;
+           novalido = true;
+            while (novalido) {
+                try{
+                    System.out.println("Duración: ");
+                    duracion = Integer.parseInt(scanner.next());
+                    novalido = false;
+                }catch(NumberFormatException e ){
+                    System.out.println("Pon un numero");
+                }
+            }
+
             System.out.println("Titulo ");
             String titulo = scanner.next();
             System.out.println("Director");
@@ -127,10 +204,30 @@ public class CineControler {
 
             if (is_serie){
                 // Si es una serie, solicita temporadas y episodios.
-                System.out.println("Temporadas: ");
-                int temporadas =  Integer.parseInt(scanner.next());
-                System.out.println("Episodio: ");
-                int episodios = Integer.parseInt(scanner.next());
+
+                int temporadas = 0;
+               novalido = true;
+                while (novalido) {
+                    try{
+                        System.out.println("Temporadas: ");
+                        temporadas =  Integer.parseInt(scanner.next());
+                        novalido = false;
+                    }catch(NumberFormatException e ){
+                        System.out.println("Pon un numero");
+                    }
+                }
+              
+                int episodios = 0;
+               novalido = true;
+                while (novalido) {
+                    try{
+                        System.out.println("Episodio: ");
+                        episodios =  Integer.parseInt(scanner.next());
+                        novalido = false;
+                    }catch(NumberFormatException e ){
+                        System.out.println("Pon un numero");
+                    }
+                }
                 pelicula = new Serie(
                     sessiones.size(), duracion, titulo, director,
                     sipnosis, tema, recomendaciones, genero, temporadas,
@@ -148,7 +245,27 @@ public class CineControler {
             if (sessionesActuales != null){
                 idsesion = sessionesActuales.size();
             }
-            sessiones.add(new Session(sessiones.size() + idsesion, hora_inicio, hora_final, pelicula, fecha, new ArrayList<ArrayList<Butaca>>(butacas)));
+
+           novalido = true;
+            while (novalido) {
+                try{
+                    sessiones.add(new Session(sessiones.size() + idsesion, hora_inicio, hora_final, pelicula, fecha, new ArrayList<ArrayList<Butaca>>(butacas)));
+                    novalido = false;
+                }catch(BadsessiondayException e){
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Hora de final en formato HH:MM :");
+                            hora_final = fecha + scanner.next();
+                            LocalDate.parse(fecha+hora_final, DateTimeFormatter.ofPattern("dd/MM/yyyyHH:mm"));
+                            novalido = false;
+                        }catch(DateTimeParseException e2){
+                            System.out.println("Formato de fecha Ilegal");
+                        }
+                    }
+                }
+            }
+            
 
             // Pregunta si se desea añadir otra sesión.
             System.out.println("Desea añadir otra session [s/n]");
@@ -175,16 +292,48 @@ public class CineControler {
                     // Agregar un souvenir con sus detalles.
                     System.out.println("Nombre del souvenir: ");
                     String souvenir_nombre = scanner.next();
-                    System.out.println("Precio del souvenir: ");
-                    double souvenir_precio = Double.parseDouble(scanner.next());
-                    System.out.println("Stock del souvenir: ");
-                    int souvenir_stock = Integer.parseInt(scanner.next());
-                    System.out.println("Tipo del souvenir: ");
-                    for (int i = 0 ; i < TipoSouvenir.values().length; i++){
-                        System.out.println(i+1 + "." + TipoSouvenir.values()[i]);
-                    }
-                    TipoSouvenir souvenir_tipo = TipoSouvenir.values()[Integer.parseInt(scanner.next())-1];
 
+                    double souvenir_precio = 0;
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Precio del souvenir: ");
+                            souvenir_precio = Double.parseDouble(scanner.next());
+                            novalido = false;
+                        }catch(NumberFormatException e ){
+                            System.out.println("Pon un numero");
+                        }
+                    }
+
+                    
+                    int souvenir_stock = 0;
+
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Stock del souvenir: ");
+                            souvenir_stock = Integer.parseInt(scanner.next());
+                            novalido = false;
+                        }catch(NumberFormatException e ){
+                            System.out.println("Pon un numero");
+                        }
+                    }
+                    
+                    
+                    TipoSouvenir souvenir_tipo = TipoSouvenir.values()[0];
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Tipo del souvenir: ");
+                            for (int i = 0 ; i < TipoSouvenir.values().length; i++){
+                                System.out.println(i+1 + "." + TipoSouvenir.values()[i]);
+                            }
+                            souvenir_tipo = TipoSouvenir.values()[Integer.parseInt(scanner.next())-1];
+                            novalido = false;
+                        }catch(NumberFormatException | IndexOutOfBoundsException e){
+                            System.out.println("Pon un numero en el rango [0-"+(TipoSouvenir.values().length+1) +"]");
+                        }
+                    }
                     System.out.println("Edicion limitada [s/n]: ");
                     Boolean souvenir_limitado = scanner.next().toLowerCase().equals("s");
                     System.out.println("Franquicia del souvenir: ");
@@ -198,21 +347,66 @@ public class CineControler {
                     // Agregar un alimento con sus detalles.
                     System.out.println("Nombre del alimento: ");
                     String alimento_nombre = scanner.next();
-                    System.out.println("Precio del alimento: ");
-                    double alimento_precio = Double.parseDouble(scanner.next());
-                    System.out.println("Stock del alimento: ");
-                    int alimento_stock = Integer.parseInt(scanner.next());
-                    System.out.println("Tipo del alimento: ");
-                    for (int i = 0 ; i < TipoAlimento.values().length; i++){
-                        System.out.println(i+1 + "." + TipoAlimento.values()[i]);
-                    }
-                    TipoAlimento alimento_tipo = TipoAlimento.values()[Integer.parseInt(scanner.next())-1];
+                    
 
-                    System.out.println("Tamaño del alimento: ");
-                    for (int i = 0 ; i < Tamanio.values().length; i++){
-                        System.out.println(i+1 + "." + Tamanio.values()[i]);
+                    double alimento_precio = 0;
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Precio del alimento: ");
+                            alimento_precio = Double.parseDouble(scanner.next());
+                            novalido = false;
+                        }catch(NumberFormatException e ){
+                            System.out.println("Pon un numero");
+                        }
                     }
-                    Tamanio alimento_tamanio = Tamanio.values()[Integer.parseInt(scanner.next())-1];
+                    
+                    int alimento_stock = 0;
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Stock del alimento: ");
+                            alimento_stock = Integer.parseInt(scanner.next());
+                            novalido = false;
+                        }catch(NumberFormatException e ){
+                            System.out.println("Pon un numero");
+                        }
+                    }
+                    
+                    TipoAlimento alimento_tipo = TipoAlimento.values()[0];
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Tipo del alimento: ");
+                            for (int i = 0 ; i < TipoAlimento.values().length; i++){
+                                System.out.println(i+1 + "." + TipoAlimento.values()[i]);
+                            }
+                            alimento_tipo = TipoAlimento.values()[Integer.parseInt(scanner.next())-1];
+                            novalido = false;
+                        }catch(NumberFormatException | IndexOutOfBoundsException e){
+                            System.out.println("Pon un numero en el rango [0-"+(TipoAlimento.values().length+1) +"]");
+                        }
+                    }
+
+                    
+                    Tamanio alimento_tamanio = Tamanio.values()[0];
+                   novalido = true;
+                    while (novalido) {
+                        try{
+                            System.out.println("Tamaño del alimento: ");
+                            for (int i = 0 ; i < Tamanio.values().length; i++){
+                                System.out.println(i+1 + "." + Tamanio.values()[i]);
+                            }
+                            alimento_tamanio = Tamanio.values()[Integer.parseInt(scanner.next())-1];
+                            novalido = false;
+                        }catch(NumberFormatException | IndexOutOfBoundsException e){
+                            System.out.println("Pon un numero en el rango [0-"+(Tamanio.values().length+1) +"]");
+                        }
+                    }
+                    
+                    
+                    
+                    
                     System.out.println("Vegano[s/n]");
                     boolean vegan = scanner.next().toLowerCase().equals("s");
 
@@ -221,12 +415,22 @@ public class CineControler {
                     System.out.println("¿Tiene alergenos? [s/n]: ");
                     boolean mas_alergenos = scanner.next().toLowerCase().equals("s");
                     while (mas_alergenos) {
-                        System.out.println("Alergeno: ");
-                        for (int i = 0 ; i < Alergeno.values().length; i++){
-                            System.out.println(i+1 + "." + Alergeno.values()[i]);
+                        Alergeno alimento_Alergeno = Alergeno.values()[0];
+                       novalido = true;
+                        while (novalido) {
+                            try{
+                                System.out.println("Alergeno: ");
+                                for (int i = 0 ; i < Alergeno.values().length; i++){
+                                    System.out.println(i+1 + "." + Alergeno.values()[i]);
+                                }
+                                alimento_Alergeno = Alergeno.values()[Integer.parseInt(scanner.next())-1];
+                                alergenos.add(alimento_Alergeno);
+                                novalido = false;
+                            }catch(NumberFormatException | IndexOutOfBoundsException e){
+                                System.out.println("Pon un numero en el rango [0-"+(Alergeno.values().length+1) +"]");
+                            }
                         }
-                        Alergeno alimento_Alergeno = Alergeno.values()[Integer.parseInt(scanner.next())-1];
-                        alergenos.add(alimento_Alergeno);
+                    
                         System.out.println("Desea añadir otro alergeno [s/n]");
                         mas_alergenos = scanner.next().toLowerCase().equals("s");
                     }
@@ -253,11 +457,21 @@ public class CineControler {
 
         while (mas_tiendas) {
             ArrayList<Productos> productos = new ArrayList<>();
-            System.out.println("Ahora vamos a crear las tiendas");
-            System.out.println("Tipo de articulos a vender: ");
-            System.out.println("1.Souvenirs");
-            System.out.println("2.Alimentos");
-            TipoProducto ta = TipoProducto.values()[Integer.parseInt(scanner.next())-1];
+
+            TipoProducto ta = TipoProducto.values()[0];
+            novalido = true;
+            while (novalido) {
+                try{
+                    System.out.println("Ahora vamos a crear las tiendas");
+                    System.out.println("Tipo de articulos a vender: ");
+                    System.out.println("1.Souvenirs");
+                    System.out.println("2.Alimentos");
+                    ta = TipoProducto.values()[Integer.parseInt(scanner.next())-1];
+                    novalido = false;
+                }catch(NumberFormatException | IndexOutOfBoundsException e){
+                    System.out.println("Pon un numero en el rango [0-"+(TipoProducto.values().length+1) +"]");
+                }
+            }
 
             // Se determina el ID de la tienda.
             int idtienda = 0;

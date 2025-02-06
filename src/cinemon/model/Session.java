@@ -2,9 +2,11 @@ package cinemon.model;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import cinemon.model.exceptions.BadsessiondayException;
 
 public class Session {
     private int id;
@@ -13,21 +15,21 @@ public class Session {
     private Proyecion pelicula;
     private LocalDate fecha;
     ArrayList<ArrayList<Butaca>> butacas;
-    public Session(int id, LocalDate horaInicio, LocalDate horaFinal, Proyecion pelicula, LocalDate fecha, ArrayList<ArrayList<Butaca>> butacas) {
+    public Session(int id, LocalDate horaInicio, LocalDate horaFinal, Proyecion pelicula, LocalDate fecha, ArrayList<ArrayList<Butaca>> butacas)throws BadsessiondayException {
         this.id = id;
         this.horaInicio = horaInicio;
         this.horaFinal = horaFinal;
         this.pelicula = pelicula;
-        this.fecha = fecha;
+        setFecha(fecha);
         this.butacas = butacas;
     }
-    public Session(int id, String horaInicio, String horaFinal, Proyecion pelicula, String fecha, ArrayList<ArrayList<Butaca>> butacas) {
+    public Session(int id, String horaInicio, String horaFinal, Proyecion pelicula, String fecha, ArrayList<ArrayList<Butaca>> butacas) throws BadsessiondayException {
        
         this.id = id;
         this.horaInicio = LocalDate.parse(horaInicio, DateTimeFormatter.ofPattern("dd/MM/yyyyHH:mm"));
         this.horaFinal = LocalDate.parse(horaFinal, DateTimeFormatter.ofPattern("dd/MM/yyyyHH:mm"));
         this.pelicula = pelicula;
-        this.fecha = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        setFecha(fecha);
         this.butacas = butacas;
     }
     public int getId() {
@@ -60,8 +62,15 @@ public class Session {
     public LocalDate getFecha() {
         return fecha;
     }
-    public void setFecha(String fecha) {
-        this.fecha = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    public void setFecha(String fecha) throws BadsessiondayException {
+
+        LocalDate tmp_fecha = LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        if (tmp_fecha.isBefore(LocalDate.now())){
+            throw new BadsessiondayException("No puedes programar una session para un dia anterior");
+        }else{
+            this.fecha = tmp_fecha;
+        }
+
     }
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
