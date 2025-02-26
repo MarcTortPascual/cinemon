@@ -16,6 +16,7 @@ public class SelectCine extends javax.swing.JFrame {
      */
   
     public SelectCine() {
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         initComponents();
         CineData cd = new CineData();
         this.setTitle("Cinemon");

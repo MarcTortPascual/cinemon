@@ -5,6 +5,7 @@ import cinemon.model.Sala;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 /**
  *
@@ -23,7 +24,7 @@ public class Sessions extends javax.swing.JFrame {
         int x = 0;
         int w = 50;
         Sessions sc = this;
-        
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         for (var i : sala.getSessiones()){
            
             JButton butoncine = new JButton(i.getPelicula().getTitulo());

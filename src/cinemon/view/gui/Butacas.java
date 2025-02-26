@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
 /**
  *
@@ -27,7 +28,7 @@ public class Butacas extends javax.swing.JFrame {
         this.se = se;
         int x = 100;  
         int y = 100;
-        
+        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
              
         JButton butonvolver = new JButton("Volver");
         
