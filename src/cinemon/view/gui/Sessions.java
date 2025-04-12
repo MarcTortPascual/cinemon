@@ -23,6 +23,7 @@ public class Sessions extends javax.swing.JFrame {
         
         int x = 0;
         int w = 50;
+        int y = 10;
         Sessions sc = this;
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
         for (var i : sala.getSessiones()){
@@ -30,8 +31,9 @@ public class Sessions extends javax.swing.JFrame {
             JButton butoncine = new JButton(i.getPelicula().getTitulo());
             this.add(butoncine);
             butoncine.setVisible(true);
-            butoncine.setBounds(x, w, w*2, w);
+            butoncine.setBounds(x, y, w*2, w);
             x += w*3;
+            y += 20;
             
             butoncine.addActionListener(new ActionListener(){
                 @Override
